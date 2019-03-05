@@ -1,51 +1,71 @@
 ﻿using System.Collections.Generic;
-using System.Collections;
+using System.Collections.ObjectModel;
 using System;
 
 namespace riadh.Stats
 {
+    [Serializable]
     public class CharacterStat
     {
-
+        #region PublicVariables
         public float BaseValue;
-        private bool isDirty = true; // to avoid calling CalculateFinalValue() every single time and call it only when a change has occured
-        private float _value;
+        public readonly ReadOnlyCollection<StatModifier> StatModifiers;
+        #endregion
 
-        public float Value
+
+        public virtual float Value
         {
             get
             {
-                if (isDirty)
+                if (isDirty || lastBaseValue != BaseValue)
                 {
+                    lastBaseValue = BaseValue;
                     _value = CalculateFinalValue();
                     isDirty = false;
+
                 }
                 return _value;
             }
         }
 
-        private readonly List<StatModifier> statModifiers;
+        #region protectedVariables
+        protected float lastBaseValue = float.MinValue;
+        protected bool isDirty = true; // to avoid calling CalculateFinalValue() every single time and call it only when a change has occured
+        protected float _value;
+        protected readonly List<StatModifier> statModifiers;
+        #endregion
 
-        public CharacterStat(float baseValue)
+        #region Constructor
+        public CharacterStat()
+        {
+            statModifiers = new List<StatModifier>();
+            StatModifiers = statModifiers.AsReadOnly();
+        }
+
+        public CharacterStat(float baseValue) : this()
         {
             BaseValue = baseValue;
-            statModifiers = new List<StatModifier>();
         }
+        #endregion
 
-        public bool RemoveModifier(StatModifier mod)
+        public virtual bool RemoveModifier(StatModifier mod)
         {
-            isDirty = true;
-            return statModifiers.Remove(mod);
+            if (statModifiers.Remove(mod))
+            {
+                isDirty = true;
+                return true;
+            }
+            return false;
         }
 
-        public void AddModifier(StatModifier mod)
+        public virtual void AddModifier(StatModifier mod)
         {
             isDirty = true;
             statModifiers.Add(mod);
             statModifiers.Sort(CompareModifierOrder);
         }
 
-        private float CalculateFinalValue()
+        protected virtual float CalculateFinalValue()
         {
             float finalValue = BaseValue;
             float sumPercentAdd = 0; // This will hold the sum of our "PercentAdd" modifiers
@@ -78,13 +98,29 @@ namespace riadh.Stats
             return (float)Math.Round(finalValue, 4);
         }
 
-        private int CompareModifierOrder (StatModifier a, StatModifier b) // if returns 1 , it will go the standard order in the enum, else it will go opposite order and sort it in that order
+        protected virtual int CompareModifierOrder (StatModifier a, StatModifier b) // if returns 1 , it will go the standard order in the enum, else it will go opposite order and sort it in that order
         {
             if (a.Order < b.Order)
                 return -1;
             else if (a.Order > b.Order)
                 return 1;
             return 0; // if both are equal, so same priority
+        }
+         
+        public virtual bool RemoveAllModifiersFromSource (object source) //loop is in reverse to not edit the order of the items in the list and go through all of them and not reach null reference
+        {
+            bool didRemove = false; //still isn't removed
+
+            for (int i = statModifiers.Count -1; i>=0; i--)
+            {
+                if (statModifiers[i].Source == source)
+                {
+                    isDirty = true;
+                    didRemove = true;
+                    statModifiers.RemoveAt(i);
+                }
+            }
+            return didRemove;
         }
 
     }
