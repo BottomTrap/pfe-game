@@ -1,19 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using riadh.Stats;
 
-public class WeaponClass : MonoBehaviour
+public class WeaponClass 
 {
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+#region STATS
+    public CharacterStat Attack;
+    public CharacterStat HitRate;
+    public CharacterStat CritHitRate;
+#endregion
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

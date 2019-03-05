@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using riadh.Stats;
+﻿using riadh.Stats;
 
-public class UnitClass : MonoBehaviour 
+public class UnitClass 
 {
+#region STATS
+    public CharacterStat Health;
+    public CharacterStat Attack;
+    public CharacterStat Defense;
+    public CharacterStat AbilityPoints;
+    public CharacterStat Speed;
+#endregion
 
-
-
-   
 }
