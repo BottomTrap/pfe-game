@@ -5,10 +5,10 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private CharacterController characterController;
-    private Animator animator;
+    
 
     [SerializeField]
-    private float moveSpeed = 100;
+    private float moveSpeed = 30;
     [SerializeField]
     private float turnSpeed = 5f;
 

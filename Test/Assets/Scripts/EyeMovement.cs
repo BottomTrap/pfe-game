@@ -1,0 +1,85 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class EyeMovement : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+    
+    // Update is called once per frame
+    void Update()
+    {
+        //Keyboard Scroll
+
+        float translationX = Input.GetAxis("Horizontal");
+        float translationY = Input.GetAxis("Vertical");
+        float fastTranslationX = 2 * Input.GetAxis("Horizontal");
+        float fastTranslationY = 2 * Input.GetAxis("Vertical");
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            transform.Translate(fastTranslationX + fastTranslationY, 0, fastTranslationY - fastTranslationX);
+        }
+        else
+        {
+            transform.Translate(translationX + translationY, 0, translationY - translationX);
+        }
+
+        //Mouse Scroll
+
+        var mousePosX = Input.mousePosition.x;
+        var mousePosY = Input.mousePosition.y;
+        int scrollDistance = 5;
+        float scrollSpeed = 70.0f;
+
+        //Horizontal Camera Movement
+        if (mousePosX < scrollDistance)
+        {
+            //horizontal left
+            transform.Translate(-1, 0, 1);
+        }
+        if (mousePosY >= Screen.width - scrollDistance)
+        {
+            //horizontal right
+            transform.Translate(1, 0, -1);
+        }
+
+        //Vertical Camera Movement
+        if (mousePosY < scrollDistance)
+        {
+            //scrolling down
+            transform.Translate(-1, 0, -1);
+        }
+        if (mousePosY >= Screen.height - scrollDistance)
+        {
+            //scrolling up
+            transform.Translate(1, 0, 1);
+        }
+
+        //Zoom
+        Camera Eye = GetComponentInChildren<Camera>();
+
+        // 
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 && Eye.orthographicSize > 4)
+        {
+            Eye.orthographicSize = Eye.orthographicSize - 4;
+        }
+
+        // 
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && Eye.orthographicSize < 80)
+        {
+            Eye.orthographicSize = Eye.orthographicSize + 4;
+        }
+
+        //default zoom
+        if (Input.GetKeyDown(KeyCode.Mouse2))
+        {
+            Eye.orthographicSize = 50;
+        }
+        
+    }
+}
