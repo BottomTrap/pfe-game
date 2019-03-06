@@ -33,33 +33,35 @@ public class EyeMovement : MonoBehaviour
 
         var mousePosX = Input.mousePosition.x;
         var mousePosY = Input.mousePosition.y;
-        int scrollDistance = 5;
+        int scrollDistance = 3;
         float scrollSpeed = 70.0f;
 
         //Horizontal Camera Movement
-        if (mousePosX < scrollDistance)
+        if (Input.GetKey(KeyCode.Space))
         {
-            //horizontal left
-            transform.Translate(-1, 0, 1);
-        }
-        if (mousePosY >= Screen.width - scrollDistance)
-        {
-            //horizontal right
-            transform.Translate(1, 0, -1);
-        }
+            if (mousePosX < scrollDistance)
+            {
+                //horizontal left
+                transform.Translate(-1, 0, 1);
+            }
+            if (mousePosY >= Screen.width - scrollDistance)
+            {
+                //horizontal right
+                transform.Translate(1, 0, -1);
+            }
 
-        //Vertical Camera Movement
-        if (mousePosY < scrollDistance)
-        {
-            //scrolling down
-            transform.Translate(-1, 0, -1);
+            //Vertical Camera Movement
+            if (mousePosY < scrollDistance)
+            {
+                //scrolling down
+                transform.Translate(-1, 0, -1);
+            }
+            if (mousePosY >= Screen.height - scrollDistance)
+            {
+                //scrolling up
+                transform.Translate(1, 0, 1);
+            }
         }
-        if (mousePosY >= Screen.height - scrollDistance)
-        {
-            //scrolling up
-            transform.Translate(1, 0, 1);
-        }
-
         //Zoom
         Camera Eye = GetComponentInChildren<Camera>();
 
@@ -79,6 +81,13 @@ public class EyeMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse2))
         {
             Eye.orthographicSize = 50;
+        }
+
+        //Rotation
+        if (Input.GetMouseButton(1))
+        {
+            translationX = Input.GetAxis("Mouse X");
+            transform.Rotate(axis: Vector3.up, angle: translationX * scrollSpeed * Time.deltaTime);
         }
         
     }
