@@ -10,8 +10,7 @@ public class EyeMovement : MonoBehaviour
         
     }
     
-    // Update is called once per frame
-    void Update()
+    void IsometricCam()
     {
         //Keyboard Scroll
 
@@ -89,6 +88,13 @@ public class EyeMovement : MonoBehaviour
             translationX = Input.GetAxis("Mouse X");
             transform.Rotate(axis: Vector3.up, angle: translationX * scrollSpeed * Time.deltaTime);
         }
+    }
+    // Update is called once per frame
+    void Update()
+    {
+
+        IsometricCam(); // Activate Isometric Camera
+
         
     }
 }
