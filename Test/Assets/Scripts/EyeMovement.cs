@@ -7,7 +7,7 @@ public class EyeMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        ObjectClick.characterSelectDelegate += CameraTransition;
     }
     
     void IsometricCam()
@@ -33,7 +33,7 @@ public class EyeMovement : MonoBehaviour
         var mousePosX = Input.mousePosition.x;
         var mousePosY = Input.mousePosition.y;
         int scrollDistance = 3;
-        float scrollSpeed = 70.0f;
+        float scrollSpeed = 4f;
 
         //Horizontal Camera Movement
         if (Input.GetKey(KeyCode.Space))
@@ -67,20 +67,20 @@ public class EyeMovement : MonoBehaviour
         // 
         if (Input.GetAxis("Mouse ScrollWheel") > 0 && Eye.orthographicSize > 4)
         {
-            Eye.orthographicSize = Eye.orthographicSize - 4;
+            Eye.orthographicSize = Eye.orthographicSize - scrollSpeed*Time.deltaTime;
         }
 
         // 
         if (Input.GetAxis("Mouse ScrollWheel") < 0 && Eye.orthographicSize < 80)
         {
-            Eye.orthographicSize = Eye.orthographicSize + 4;
+            Eye.orthographicSize = Eye.orthographicSize + scrollSpeed * Time.deltaTime ;
         }
 
         //default zoom
-        if (Input.GetKeyDown(KeyCode.Mouse2))
-        {
-            Eye.orthographicSize = 50;
-        }
+        //if (Input.GetKeyDown(KeyCode.Mouse2))
+        //{
+        //    Eye.orthographicSize = 50;
+        //}
 
         //Rotation
         if (Input.GetMouseButton(1))
@@ -88,6 +88,12 @@ public class EyeMovement : MonoBehaviour
             translationX = Input.GetAxis("Mouse X");
             transform.Rotate(axis: Vector3.up, angle: translationX * scrollSpeed * Time.deltaTime);
         }
+    }
+
+    void CameraTransition()
+    {
+        //Transform objPos = ObjectClick.objectPos;
+        this.transform.position = Vector3.Lerp(transform.position, ObjectClick.objectPos.position, Time.deltaTime);
     }
     // Update is called once per frame
     void Update()

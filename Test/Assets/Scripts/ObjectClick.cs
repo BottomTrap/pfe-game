@@ -8,12 +8,15 @@ public class ObjectClick : MonoBehaviour
     private bool _mouseover = false;
     public delegate void OnCharacterSelectDelegate();
     public static event OnCharacterSelectDelegate characterSelectDelegate;
+    public static Transform objectPos;
 
   
     public void OnMouseDown()
     {
         Debug.Log("GameObject Clicked");
+        objectPos = transform;
         characterSelectDelegate();
+        
     }
 
     private void OnGUI()
