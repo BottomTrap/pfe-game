@@ -92,15 +92,22 @@ public class EyeMovement : MonoBehaviour
 
     void CameraTransition()
     {
+        
+        
         //Transform objPos = ObjectClick.objectPos;
         while (transform.position != ObjectClick.objectPos.position)
         this.transform.position = Vector3.Lerp(transform.position, ObjectClick.objectPos.position, Time.deltaTime);
+    }
+
+    void MatrixBlender()
+    {
+
     }
     // Update is called once per frame
     void Update()
     {
 
-        IsometricCam(); // Activate Isometric Camera
+        IsometricCam(); // Activate Isometric Camera 
 
         
     }
