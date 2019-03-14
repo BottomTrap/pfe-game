@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(PlayerMovement))]
 public class ObjectClick : MonoBehaviour 
+
 {
     private bool _mouseover = false;
     public delegate void OnCharacterSelectDelegate();
     public static event OnCharacterSelectDelegate characterSelectDelegate;
-    public static Transform objectPos;
+    public static GameObject objectRef;
 
   
     public void OnMouseDown()
     {
         Debug.Log("GameObject Clicked");
-        objectPos = transform;
+        objectRef = this.gameObject;
         characterSelectDelegate();
         
     }

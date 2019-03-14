@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class EyeMovement : MonoBehaviour
 {
+    private NewPerspectiveSwitcher newPerspectiveSwitcher;
     // Start is called before the first frame update
     void Start()
     {
-        ObjectClick.characterSelectDelegate += CameraTransition;
+        newPerspectiveSwitcher = (NewPerspectiveSwitcher)GetComponent(typeof(NewPerspectiveSwitcher));
+        //ObjectClick.characterSelectDelegate += CameraTransition;
     }
     
     void IsometricCam()
@@ -25,7 +27,7 @@ public class EyeMovement : MonoBehaviour
         }
         else
         {
-            transform.Translate(translationX + translationY, 0, translationY - translationX);
+            transform.Translate(translationX , translationY, 0 );
         }
 
         //Mouse Scroll
@@ -33,7 +35,7 @@ public class EyeMovement : MonoBehaviour
         var mousePosX = Input.mousePosition.x;
         var mousePosY = Input.mousePosition.y;
         int scrollDistance = 3;
-        float scrollSpeed = 4f;
+        float scrollSpeed = 6f;
 
         //Horizontal Camera Movement
         if (Input.GetKey(KeyCode.Space))
@@ -65,16 +67,16 @@ public class EyeMovement : MonoBehaviour
         Camera Eye = GetComponentInChildren<Camera>();
 
         // 
-        if (Input.GetAxis("Mouse ScrollWheel") > 0 && Eye.orthographicSize > 4)
-        {
-            Eye.orthographicSize = Eye.orthographicSize - scrollSpeed*Time.deltaTime;
-        }
-
-        // 
-        if (Input.GetAxis("Mouse ScrollWheel") < 0 && Eye.orthographicSize < 80)
-        {
-            Eye.orthographicSize = Eye.orthographicSize + scrollSpeed * Time.deltaTime ;
-        }
+       // if (Input.GetAxis("Mouse ScrollWheel") > 0 && Eye.orthographicSize > 4)
+       // {
+       //     Eye.orthographicSize = Eye.orthographicSize - scrollSpeed*Time.deltaTime;
+       // }
+       //
+       // // 
+       // if (Input.GetAxis("Mouse ScrollWheel") < 0 && Eye.orthographicSize < 80)
+       // {
+       //     Eye.orthographicSize = Eye.orthographicSize + scrollSpeed * Time.deltaTime ;
+       // }
 
         //default zoom
         //if (Input.GetKeyDown(KeyCode.Mouse2))
@@ -86,28 +88,27 @@ public class EyeMovement : MonoBehaviour
         if (Input.GetMouseButton(1))
         {
             translationX = Input.GetAxis("Mouse X");
+            
             transform.Rotate(axis: Vector3.up, angle: translationX * scrollSpeed * Time.deltaTime);
         }
     }
 
-    void CameraTransition()
-    {
-        
-        
-        //Transform objPos = ObjectClick.objectPos;
-        while (transform.position != ObjectClick.objectPos.position)
-        this.transform.position = Vector3.Lerp(transform.position, ObjectClick.objectPos.position, Time.deltaTime);
-    }
+   //void CameraTransition()
+   //{
+   //    
+   //    
+   //    //Transform objPos = ObjectClick.objectPos;
+   //    while (transform.position != ObjectClick.objectPos.position)
+   //    this.transform.position = Vector3.Lerp(transform.position, ObjectClick.objectPos.position, Time.deltaTime);
+   //}
 
-    void MatrixBlender()
-    {
-
-    }
+   
     // Update is called once per frame
     void Update()
     {
-
-        IsometricCam(); // Activate Isometric Camera 
+       //if(newPerspectiveSwitcher.orthoOn)
+       //IsometricCam(); // Activate Isometric Camera 
+        
 
         
     }
