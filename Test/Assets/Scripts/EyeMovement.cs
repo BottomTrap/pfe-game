@@ -7,7 +7,7 @@ public class EyeMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ObjectClick.characterSelectDelegate += CameraTransition;
+        //ObjectClick.characterSelectDelegate += CameraTransition;
     }
     
     void IsometricCam()

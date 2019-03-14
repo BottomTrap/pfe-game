@@ -15,7 +15,12 @@ public class ObjectClick : MonoBehaviour
     {
         Debug.Log("GameObject Clicked");
         objectPos = transform;
+        if (tag=="Player")
         characterSelectDelegate();
+        else if (tag == "Enemy")//do things if the clicked object is an enemy
+        {
+
+        }
         
     }
 
