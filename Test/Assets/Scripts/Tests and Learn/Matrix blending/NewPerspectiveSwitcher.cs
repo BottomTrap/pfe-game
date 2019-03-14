@@ -13,7 +13,6 @@ public class NewPerspectiveSwitcher : MonoBehaviour
     private float aspect;
     private NewMatrixBlender blender;
     private bool orthoOn;
-    private bool isDraggig = false;
     Camera m_camera;
 
 
@@ -22,7 +21,6 @@ public class NewPerspectiveSwitcher : MonoBehaviour
 
     [SerializeField] private Vector3 offset;         //Private variable to store the offset distance between the player and camera
     [SerializeField] private float rotateSpeed = 5f;
-    [SerializeField] private Vector3 orthoOffset;
     float horizontal = 0.0f;
     void Start()
     {
@@ -30,7 +28,7 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         offset = new Vector3(-2, 1, -4);
         //Calculate and store the offset value by getting the distance between the player's position and camera's position.
         //offset = transform.position - player.transform.position;
-        orthoOffset = transform.position - player.transform.position;
+        
         
         
         //Perspective switcher stuff
@@ -46,16 +44,13 @@ public class NewPerspectiveSwitcher : MonoBehaviour
 
     void Update()
     {
-        orthoOffset = transform.position - player.transform.position;
         if (Input.GetKeyDown(KeyCode.Space))
         {
             orthoOn = !orthoOn;
             if (orthoOn)
-            {       blender.BlendToMatrix(ortho, 1f, 8, true);
-            transform.position = orthoOffset;
-            }
+                blender.BlendToMatrix(ortho, 1f, 8, true);
             else
-            blender.BlendToMatrix(perspective, 1f, 8, false);
+                blender.BlendToMatrix(perspective, 1f, 8, false);
                                 
         }
      
@@ -68,41 +63,19 @@ public class NewPerspectiveSwitcher : MonoBehaviour
 
         }
     }
-    private void OnMouseDrag()
-    {
-        isDraggig = true;
-        horizontal = Input.GetAxis("Mouse X") * rotateSpeed;
-
-    }
-    private void OnMouseUp()
-    {
-        isDraggig = false;
-    }
 
     void CameraMovement()
     {
-        float angle = player.transform.eulerAngles.y;
         // Set the position of the camera's transform to be the same as the player's, but offset by the calculated offset distance.
         //transform.position = player.transform.position + offset;
-        if (isDraggig)
+        if (Input.GetMouseButton(1))
         {
-            //horizontal = Input.GetAxis("Mouse X") * rotateSpeed;
-            transform.RotateAround(player.transform.position, Vector3.up, angle * horizontal);
+            horizontal = Input.GetAxis("Mouse X") * rotateSpeed;
         }
-        else
-        {
-            horizontal = 0; //reset horizontal value
-        }
-        
-
-        
-        
-        
+        player.transform.Rotate(0, horizontal, 0);
+        float angle = player.transform.eulerAngles.y;
         Quaternion rotation = Quaternion.Euler(0, angle, 0);
-        transform.position = Vector3.Lerp(transform.position,player.transform.position +  offset, rotateSpeed*Time.deltaTime);
-        //transform.LookAt(player.transform);
-        Vector3 direction = player.transform.position - transform.position;
-        Quaternion toRotation = Quaternion.FromToRotation(transform.forward, direction);
-        transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, rotateSpeed * Time.deltaTime);
+        transform.position = player.transform.position + rotation * offset;
+        transform.LookAt(player.transform);
     }
 }
