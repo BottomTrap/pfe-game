@@ -9,17 +9,19 @@ public class ObjectClick : MonoBehaviour
     public delegate void OnCharacterSelectDelegate();
     public static event OnCharacterSelectDelegate characterSelectDelegate;
     public static Transform objectPos;
+    public static bool objectClicked;
 
   
     public void OnMouseDown()
     {
         Debug.Log("GameObject Clicked");
+        objectClicked = true;
         objectPos = transform;
         if (tag=="Player")
         characterSelectDelegate();
         else if (tag == "Enemy")//do things if the clicked object is an enemy
         {
-
+            //like some UI or stuff
         }
         
     }

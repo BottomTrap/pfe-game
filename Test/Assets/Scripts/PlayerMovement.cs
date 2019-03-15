@@ -12,23 +12,40 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float turnSpeed = 5f;
 
+    private Vector3 lastPosition;
+    private float distanceTraveled;
+
+    private PlayerStats playerstats;
     private void Awake()
     {
+        playerstats = (PlayerStats)GetComponent(typeof(PlayerStats));
         characterController = GetComponent<CharacterController>();
-      
+        lastPosition = transform.position;
     }
 
     private void Update()
     {
+        if (ObjectClick.objectClicked)
+        {
+            distanceTraveled += Vector3.Distance(transform.position, lastPosition);
+            lastPosition = transform.position;
+            if (distanceTraveled < playerstats.AP.BaseValue)
+            {
+                Movement();
+            }
+        }
+    }
+    void Movement()
+    {
         var horizontal = Input.GetAxis("Horizontal");
         var vertical = Input.GetAxis("Vertical");
 
-        var movement = new Vector3(horizontal , 0, vertical);
+        var movement = new Vector3(horizontal, 0, vertical);
         movement = transform.TransformDirection(movement);
 
         characterController.SimpleMove(movement * Time.deltaTime * moveSpeed);
 
-        
+
 
         if (movement.magnitude > 0)
         {

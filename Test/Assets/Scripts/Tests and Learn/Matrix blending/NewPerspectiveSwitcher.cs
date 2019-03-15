@@ -21,7 +21,8 @@ public class NewPerspectiveSwitcher : MonoBehaviour
 
     [SerializeField] private Vector3 offset;         //Private variable to store the offset distance between the player and camera
     [SerializeField] private float rotateSpeed = 5f;
-    float horizontal = 0.0f;
+    private Transform oldTransform;
+    //float horizontal = 0.0f;
     void Start()
     {
         //Delegate subscription 
@@ -43,6 +44,9 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         orthoOn = true;
         blender = (NewMatrixBlender)GetComponent(typeof(NewMatrixBlender));
         blender.BlendToMatrix(ortho, 1f, 8, true);
+
+        // 
+        orthoOn = true;
     }
 
     void Update()
@@ -51,53 +55,133 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         //orthoOn = !orthoOn;
         if (orthoOn)
             blender.BlendToMatrix(ortho, 1f, 8, true);
-        else if (!orthoOn && transitionning)
-            blender.BlendToMatrix(perspective, 1f, 8, false);
+        else if( !orthoOn && transitionning)
+        {
+            
             CameraTransition();
-
-    }
-    void LateUpdate()
-    {
+        }
         if (!orthoOn && !transitionning)
         {
             CameraMovement();
         }
+        if (orthoOn && !transitionning)
+        {
+            IsoMovement();
+        }
+        
+           
+
     }
+  //void LateUpdate() //NOTE TO SELF : LATE UPDATE DOES WEIRD THINGS WHEN ITS WITH UPDATE SIMULATNEOUSLY 
+  //{
+  //    if (!orthoOn)
+  //    {
+  //        CameraMovement();
+  //    }
+  //}
     void CamTrans()
     {
-        transitionning = !transitionning ;
+        transitionning = true;
         orthoOn = false;
         Debug.Log(orthoOn);
         Debug.Log(transitionning);
+        blender.BlendToMatrix(perspective, 1f, 8, false);
+
+
 
     }
-    void CameraTransition()
+    void CameraTransition() // Cool looking lerp
     {
-        
+        oldTransform = transform;
         playerTransform = ObjectClick.objectPos;
         float angle = playerTransform.eulerAngles.y;
         Quaternion rotation = Quaternion.Euler(0, angle, 0);
+        Vector3 firstLerp = new Vector3(playerTransform.position.x, playerTransform.position.y, transform.position.z);
+        transform.position = Vector3.Lerp(transform.position, firstLerp, rotateSpeed * Time.deltaTime);
         transform.position = Vector3.Lerp(transform.position, playerTransform.position + offset, rotateSpeed * Time.deltaTime);
         //transform.LookAt(player.transform);
         Vector3 direction = playerTransform.position - transform.position;
         Quaternion toRotation = Quaternion.FromToRotation(transform.forward, direction);
         transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, rotateSpeed * Time.deltaTime);
-        //transitionning=!transitionning;
+        transitionning = false;
+    }
+
+    void IsoCameraTransition()
+    {
+        transform.position = Vector3.Lerp(transform.position, oldTransform.position, rotateSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, oldTransform.rotation, rotateSpeed * Time.deltaTime);
     }
     void CameraMovement() //player follow !! to make after we made camera transition
     {
         // Set the position of the camera's transform to be the same as the player's, but offset by the calculated offset distance.
-        //transform.position = player.transform.position + offset;
+        transform.position = playerTransform.position + offset;
        // if (Input.GetMouseButton(1))
        // {
        //     horizontal = Input.GetAxis("Mouse X") * rotateSpeed;
        // }
        // player.transform.Rotate(0, horizontal, 0);
-       // float angle = player.transform.eulerAngles.y;
-       // Quaternion rotation = Quaternion.Euler(0, angle, 0);
-       // transform.position = player.transform.position + rotation * offset;
-       // transform.LookAt(player.transform);
+        float angle = playerTransform.eulerAngles.y;
+        Quaternion rotation = Quaternion.Euler(0, angle, 0);
+        transform.position = playerTransform.position + rotation * offset;
+        transform.LookAt(playerTransform);
 
 
+    }
+    void IsoMovement()
+    {
+        //Keyboard Scroll
+
+        float translationX = Input.GetAxis("Horizontal");
+        float translationY = Input.GetAxis("Vertical");
+        float fastTranslationX = 2 * Input.GetAxis("Horizontal");
+        float fastTranslationY = 2 * Input.GetAxis("Vertical");
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            transform.Translate(fastTranslationX , 0, fastTranslationY);
+        }
+        else
+        {
+            transform.Translate(translationX ,0 , translationY, Space.World );
+        }
+
+        //Mouse Scroll
+
+        var mousePosX = Input.mousePosition.x;
+        var mousePosY = Input.mousePosition.y;
+        int scrollDistance = 3;
+        float scrollSpeed = 15f;
+
+        //Horizontal Camera Movement
+        if (Input.GetKey(KeyCode.Space))
+        {
+            if (mousePosX < scrollDistance)
+            {
+                //horizontal left
+                transform.Translate(-1, 0, 1);
+            }
+            if (mousePosY >= Screen.width - scrollDistance)
+            {
+                //horizontal right
+                transform.Translate(1, 0, -1);
+            }
+
+            //Vertical Camera Movement
+            if (mousePosY < scrollDistance)
+            {
+                //scrolling down
+                transform.Translate(-1, 0, -1);
+            }
+            if (mousePosY >= Screen.height - scrollDistance)
+            {
+                //scrolling up
+                transform.Translate(1, 0, 1);
+            }
+        }
+        if (Input.GetMouseButton(1))
+        {
+            translationX = Input.GetAxis("Mouse X");
+            transform.Rotate(axis: new Vector3(0,1,0), angle: translationX * scrollSpeed * Time.deltaTime,Space.World);
+        }
     }
 }
