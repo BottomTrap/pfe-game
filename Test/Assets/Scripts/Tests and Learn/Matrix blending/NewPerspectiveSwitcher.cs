@@ -18,15 +18,21 @@ public class NewPerspectiveSwitcher : MonoBehaviour
 
     private Transform playerTransform;       //Public variable to store a reference to the player transform from ObjectClick.cs when delegate is activated
     private bool transitionning=false;
+    private bool aimView = false;
 
     [SerializeField] private Vector3 offset;         //Private variable to store the offset distance between the player and camera
     [SerializeField] private float rotateSpeed = 5f;
     private Transform oldTransform;
     //float horizontal = 0.0f;
+
+
+
+    
     void Start()
     {
         //Delegate subscription 
         ObjectClick.characterSelectDelegate += CamTrans;
+        PlayerMovement.viewChangeDelegate += AimView;
         //Third Person Camera Stuff
         offset = new Vector3(-2, 1, -4);
         //Calculate and store the offset value by getting the distance between the player's position and camera's position.
@@ -68,7 +74,10 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         {
             IsoMovement();
         }
-        
+        if(!orthoOn && !transitionning && aimView)
+        {
+
+        }
            
 
     }
@@ -183,5 +192,12 @@ public class NewPerspectiveSwitcher : MonoBehaviour
             translationX = Input.GetAxis("Mouse X");
             transform.Rotate(axis: new Vector3(0,1,0), angle: translationX * scrollSpeed * Time.deltaTime,Space.World);
         }
+    }
+
+    void AimView()
+    {
+        //reticle or corshair or whatever control and appearance
+        // aim and orientation animation when models ready 
+        //that's about it
     }
 }
