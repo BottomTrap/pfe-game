@@ -14,10 +14,12 @@ public class PlayerController : MonoBehaviour {
 	public bool smooth;
 	public float smoothSpeed;
 
+
 	[Header("Jump Options")]
 	public float jumpForce;
 	public float jumpSpeed;
 	public float jumpDecrease;
+	public float incrementJumpFallSpeed = 0.1f;
 
 	[Header("Gravity")]
 	public float gravity=2.5f;
@@ -56,7 +58,7 @@ public class PlayerController : MonoBehaviour {
 	#region Movement Methods
 
 	private void SimpleMove() {
-		move = new Vector3 (Input.GetAxis ("Horizontal"), 0, Input.GetAxis ("Vertical"));
+		move = Vector3.ClampMagnitude(new Vector3 (Input.GetAxis ("Horizontal"), 0, Input.GetAxis ("Vertical")), 1);
 		velocity += move;
 	}
 		
@@ -111,7 +113,7 @@ public class PlayerController : MonoBehaviour {
 		int num = Physics.OverlapSphereNonAlloc (transform.TransformPoint (groundCheckPoint), 0.55f, col, discludePlayer);
 
 		grounded = false;
-
+			
 		for (int i = 0; i < num; i++) {
 
 			if (col [i].transform == tempHit.transform) {
@@ -120,10 +122,16 @@ public class PlayerController : MonoBehaviour {
 
 				//Snapping 
 				if (inputJump == false) {
+
+					Vector3 avg = new Vector3 (transform.position.x, (groundHit.point.y + playerHeight / 2), transform.position.z);
+
 					if (!smooth) {
-						transform.position = new Vector3 (transform.position.x, (groundHit.point.y + playerHeight / 2), transform.position.z);
+						transform.position = avg;
 					} else {
-						transform.position = Vector3.Lerp (transform.position, new Vector3 (transform.position.x, (groundHit.point.y + playerHeight / 2), transform.position.z), smoothSpeed * Time.deltaTime);
+						
+						transform.position = Vector3.Lerp (transform.position, new Vector3 (transform.position.x, (groundHit.point.y + playerHeight / 2), transform.position.z), (smoothSpeed) * Time.deltaTime);
+
+
 					}
 				}
 
@@ -154,6 +162,8 @@ public class PlayerController : MonoBehaviour {
 
 
 	}
+
+
 
 	#endregion
 
@@ -192,6 +202,8 @@ public class PlayerController : MonoBehaviour {
 	private float jumpHeight = 0;
 	private bool inputJump = false;
 
+    private float fallMultiplier = -1;
+
 	private void Jump() {
 		bool canJump = false;
 
@@ -200,21 +212,22 @@ public class PlayerController : MonoBehaviour {
 		if (grounded && jumpHeight > 0.2f || jumpHeight <= 0.2f && grounded) {
 			jumpHeight = 0;
 			inputJump = false;
-
+            fallMultiplier = -1;
 		}
 
 		if (grounded && canJump) {
 
 			if (Input.GetKeyDown(KeyCode.Space)){
 				inputJump = true;
-				transform.position += Vector3.up * 0.6f;
+                transform.position += Vector3.up * 0.2f;
 				jumpHeight += jumpForce;
 			}
 
 		} else {
 			if (!grounded) {
 
-				jumpHeight -= (jumpHeight * jumpDecrease * Time.deltaTime);
+                jumpHeight -= (jumpHeight * jumpDecrease * Time.deltaTime) + fallMultiplier * Time.deltaTime;
+                fallMultiplier += incrementJumpFallSpeed;
 
 			}
 		}

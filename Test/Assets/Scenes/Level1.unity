@@ -556,7 +556,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 463935810}
-  - component: {fileID: 463935809}
   - component: {fileID: 463935811}
   m_Layer: 0
   m_Name: LevelManager
@@ -565,19 +564,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &463935809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 463935808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00781bf34e7c11847a103f96e3873d86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commmandPoints: 0
 --- !u!4 &463935810
 Transform:
   m_ObjectHideFlags: 0
@@ -1034,7 +1020,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 1132676927}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
@@ -1110,14 +1096,21 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1132676927}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66c763a76088f884d9c42c24ba48eca1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 300
-  turnSpeed: 5
+  playerHeight: 5
+  moveSpeed: 5
+  smooth: 0
+  smoothSpeed: 0
   didHit: 1
+  gravity: 2.5
+  discludePlayer:
+    serializedVersion: 2
+    m_Bits: 0
+  sphereCol: {fileID: 1132676936}
 --- !u!114 &1132676934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1153,30 +1146,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31430be99e11fdd4fbe25e9a386d352a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1132676936
-MonoBehaviour:
+--- !u!135 &1132676936
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1132676927}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a5586930286a9f45900f4f80d6372b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerHeight: 5
-  movementSpeed: 5
-  smooth: 1
-  smoothSpeed: 3
-  jumpForce: 0
-  jumpSpeed: 0
-  jumpDecrease: 0
-  gravity: 9
-  discludePlayer:
-    serializedVersion: 2
-    m_Bits: 0
-  sphereCol: {fileID: 262088455}
+  serializedVersion: 2
+  m_Radius: 0.4942153
+  m_Center: {x: 0.00052475976, y: 0.38956106, z: 0.019997954}
 --- !u!1 &1154831864
 GameObject:
   m_ObjectHideFlags: 0
@@ -1514,6 +1496,40 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1783751880 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4384656738232801408, guid: cdcc41ac8d0d8ea47b42e0970c68f048,
+    type: 3}
+  m_PrefabInstance: {fileID: 4384656740054117320}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1783751881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1783751880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac528980adf04fb48a7728e031c3465c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockCursor: 0
+  mouseSensitivity: 4
+  target: {fileID: 1132676932}
+  distFromTarget: 4
+  pitchMinMax: {x: -40, y: 85}
+  rotationSmoothTime: 8
+  changeTransparency: 1
+  targetRenderer: {fileID: 1132676930}
+  moveSpeed: 5
+  returnSpeed: 9
+  wallPush: 0.7
+  closestDistanceToPlayer: 2
+  evenCloserDistanceToPlayer: 1
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &1825806381
 GameObject:
   m_ObjectHideFlags: 0
@@ -1862,6 +1878,11 @@ PrefabInstance:
     - target: {fileID: 4384656738232801411, guid: cdcc41ac8d0d8ea47b42e0970c68f048,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4384656738232801412, guid: cdcc41ac8d0d8ea47b42e0970c68f048,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
