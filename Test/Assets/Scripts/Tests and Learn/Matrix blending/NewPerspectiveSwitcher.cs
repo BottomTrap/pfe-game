@@ -12,9 +12,11 @@ public class NewPerspectiveSwitcher : MonoBehaviour
                         orthographicSize = 50f;
     private float aspect;
     private NewMatrixBlender blender;
-    private bool orthoOn;
+    public bool orthoOn;
     Camera m_camera;
 
+
+    public float mouseSensitivity = 10;
 
     private Transform playerTransform;       //Public variable to store a reference to the player transform from ObjectClick.cs when delegate is activated
     private bool transitionning=false;
@@ -25,19 +27,29 @@ public class NewPerspectiveSwitcher : MonoBehaviour
     private Transform oldTransform;
     //float horizontal = 0.0f;
 
+    private Animator animator;
+    private LevelManager fsm;
 
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
 
-    
     void Start()
     {
         //Delegate subscription 
         ObjectClick.characterSelectDelegate += CamTrans;
-        PlayerMovement.viewChangeDelegate += AimView;
+        PlayerMovement.viewChangeDelegate += AimViewOn;
+        
         //Third Person Camera Stuff
         offset = new Vector3(-2, 1, -4);
         //Calculate and store the offset value by getting the distance between the player's position and camera's position.
         //offset = transform.position - player.transform.position;
-        
+
+        //FSM Stuff
+        fsm = animator.GetBehaviour<LevelManager>  ();
+
+        fsm.camBehaviour = this;
         
         
         //Perspective switcher stuff
@@ -76,7 +88,7 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         }
         if(!orthoOn && !transitionning && aimView)
         {
-
+            AimView();
         }
            
 
@@ -194,10 +206,42 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         }
     }
 
+
+    private float yaw;
+    private float pitch;
+    private Vector3 currentRotation;
+
+    public Vector3 playerOffset;
+    public float distanceFromOffset;
+    public Transform rotator;
+    public Transform target;
+
+
+
+    public Vector2 pitchMinMax = new Vector2(-40, 85);
+    public float rotationSmoothTime = 8f;
     void AimView()
     {
         //reticle or corshair or whatever control and appearance
         // aim and orientation animation when models ready 
         //that's about it
+        yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
+        pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
+        pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
+        currentRotation = Vector3.Lerp(currentRotation, new Vector3(pitch, yaw), rotationSmoothTime * Time.deltaTime);
+
+        transform.eulerAngles = currentRotation;
+        Vector3 e = transform.eulerAngles;
+        e.x = 0;
+        Vector3 g = transform.eulerAngles;
+        g.y = 0;
+
+        rotator.eulerAngles = new Vector3(g.x, rotator.eulerAngles.y, rotator.eulerAngles.z);
+
+        target.eulerAngles = e;
+    } 
+    void AimViewOn()
+    {
+        aimView = !aimView;
     }
 }

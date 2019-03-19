@@ -73,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
         //Get to the aim control
         //then push R button or Attack button elli houa
         viewChangeDelegate();
-        aiming = !aiming;
+        //aiming = !aiming;
     }
     void Movement()
     {

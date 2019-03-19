@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+
+//This is called Level Manager but I guess this is one single state in the big FSM picture, so it will be called ActionMode transition or something along the lines
+
+public class LevelManager : StateMachineBehaviour
 {
    public enum Phases
     {
@@ -14,7 +17,18 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField]
     private int commmandPoints;
+
+    //public CameraBehaviour camBehaviour;
+    public NewPerspectiveSwitcher camBehaviour;
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
+    {
+        camBehaviour.orthoOn = false;
+    }
     
 
+    public override void OnStateIK(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
+    {
+        
+    }
 
 }
