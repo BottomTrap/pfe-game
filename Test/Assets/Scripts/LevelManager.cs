@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : StateMachineBehaviour
+public class LevelManager : MonoBehaviour
 {
    public enum Phases
     {
