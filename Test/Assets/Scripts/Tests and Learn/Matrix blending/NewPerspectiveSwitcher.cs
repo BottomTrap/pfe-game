@@ -88,7 +88,7 @@ public class NewPerspectiveSwitcher : MonoBehaviour
   //        CameraMovement();
   //    }
   //}
-    void CamTrans()
+    void CamTrans() 
     {
         transitionning = true;
         orthoOn = false;
