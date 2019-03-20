@@ -19,11 +19,11 @@ public class LevelManager : StateMachineBehaviour
     private int commmandPoints;
 
     //public CameraBehaviour camBehaviour;
-    public NewPerspectiveSwitcher camBehaviour;
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
-    {
-        camBehaviour.orthoOn = false;
-    }
+    //public NewPerspectiveSwitcher camBehaviour;
+   //public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
+   //{
+   //    camBehaviour.orthoOn = false;
+   //}
     
 
     public override void OnStateIK(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)

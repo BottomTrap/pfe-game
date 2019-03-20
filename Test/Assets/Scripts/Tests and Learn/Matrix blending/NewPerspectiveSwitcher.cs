@@ -47,9 +47,9 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         //offset = transform.position - player.transform.position;
 
         //FSM Stuff
-        fsm = animator.GetBehaviour<LevelManager>  ();
+        //fsm = animator.GetBehaviour<LevelManager>  ();
 
-        fsm.camBehaviour = this;
+        //fsm.camBehaviour = this;
         
         
         //Perspective switcher stuff
