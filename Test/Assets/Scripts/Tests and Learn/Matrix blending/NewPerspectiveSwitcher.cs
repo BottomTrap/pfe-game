@@ -4,31 +4,61 @@ using System.Collections;
 [RequireComponent(typeof(NewMatrixBlender))]
 public class NewPerspectiveSwitcher : MonoBehaviour
 {
+    [Header("Perspective Switcher Variables")]
+    public float fov = 60f;
+    public float near = .3f;
+    public float far = 1000f;
+    public float orthographicSize = 50f;
+    
+    //PerspectiveSwticher Private Variables
+    Camera m_camera;
     private Matrix4x4 ortho,
                         perspective;
-    public float fov = 60f,
-                        near = .3f,
-                        far = 1000f,
-                        orthographicSize = 50f;
     private float aspect;
     private NewMatrixBlender blender;
-    public bool orthoOn;
-    Camera m_camera;
 
 
-    public float mouseSensitivity = 10;
+    
 
     private Transform playerTransform;       //Public variable to store a reference to the player transform from ObjectClick.cs when delegate is activated
-    private bool transitionning=false;
-    private bool aimView = false;
+
+
+    [Header("State Bools")]
+    public bool orthoOn=true;
+    public bool transitionning=false;
+    public bool aimView = false;
+
+    
+
+    [Header("Camera Control Variables")]
+    public float rotateSpeed = 5f;
+    public float mouseSensitivity = 10f;
+
+    [Header("AimView Stuff")]
+    private float yaw;
+    private float pitch;
+    private Vector3 currentRotation;
+
+    public Vector3 playerOffset;
+    public float distanceFromOffset;
+    public Transform rotator;
+    public Transform target;
+
+    public Vector2 pitchMinMax = new Vector2(-40, 85);
+    public float rotationSmoothTime = 8f;
 
     [SerializeField] private Vector3 offset;         //Private variable to store the offset distance between the player and camera
-    [SerializeField] private float rotateSpeed = 5f;
-    private Transform oldTransform;
+
+
+    private Transform oldTransform; // old transform to retransition back into
     //float horizontal = 0.0f;
 
+    
+
+
+    //FiniteStateMachine
+    private IsometricState isometricManager;
     private Animator animator;
-    private LevelManager fsm;
 
     private void Awake()
     {
@@ -38,7 +68,7 @@ public class NewPerspectiveSwitcher : MonoBehaviour
     void Start()
     {
         //Delegate subscription 
-        ObjectClick.characterSelectDelegate += CamTrans;
+        ObjectClick.characterSelectDelegate += PlayerSleceted;
         PlayerMovement.viewChangeDelegate += AimViewOn;
         
         //Third Person Camera Stuff
@@ -47,9 +77,8 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         //offset = transform.position - player.transform.position;
 
         //FSM Stuff
-        //fsm = animator.GetBehaviour<LevelManager>  ();
-
-        //fsm.camBehaviour = this;
+        isometricManager = animator.GetBehaviour<IsometricState>  ();
+        isometricManager.camBehaviour = this;
         
         
         //Perspective switcher stuff
@@ -84,7 +113,7 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         }
         if (orthoOn && !transitionning)
         {
-            IsoMovement();
+           // IsoMovement();
         }
         if(!orthoOn && !transitionning && aimView)
         {
@@ -100,21 +129,27 @@ public class NewPerspectiveSwitcher : MonoBehaviour
   //        CameraMovement();
   //    }
   //}
-    void CamTrans()
+    public void PlayerSleceted()
     {
-        transitionning = true;
-        orthoOn = false;
-        Debug.Log(orthoOn);
-        Debug.Log(transitionning);
-        blender.BlendToMatrix(perspective, 1f, 8, false);
+        playerTransform = ObjectClick.objectPos;
+
+    }
+    void CamTrans() //activated by delegate
+    {
+        //transitionning = true;
+        //orthoOn = false;
+        //Debug.Log(orthoOn);
+        //Debug.Log(transitionning);
+        
 
 
 
     }
-    void CameraTransition() // Cool looking lerp
+    public void CameraTransition() // Cool looking lerp
     {
+        blender.BlendToMatrix(perspective, 1f, 8, false);
         oldTransform = transform;
-        playerTransform = ObjectClick.objectPos;
+        
         float angle = playerTransform.eulerAngles.y;
         Quaternion rotation = Quaternion.Euler(0, angle, 0);
         Vector3 firstLerp = new Vector3(playerTransform.position.x, playerTransform.position.y, transform.position.z);
@@ -127,12 +162,12 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         transitionning = false;
     }
 
-    void IsoCameraTransition()
+    public void IsoCameraTransition()
     {
         transform.position = Vector3.Lerp(transform.position, oldTransform.position, rotateSpeed * Time.deltaTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, oldTransform.rotation, rotateSpeed * Time.deltaTime);
     }
-    void CameraMovement() //player follow !! to make after we made camera transition
+    public void CameraMovement() //player follow !! to make after we made camera transition
     {
         // Set the position of the camera's transform to be the same as the player's, but offset by the calculated offset distance.
         transform.position = playerTransform.position + offset;
@@ -148,7 +183,7 @@ public class NewPerspectiveSwitcher : MonoBehaviour
 
 
     }
-    void IsoMovement()
+    public void IsoMovement()
     {
         //Keyboard Scroll
 
@@ -207,20 +242,8 @@ public class NewPerspectiveSwitcher : MonoBehaviour
     }
 
 
-    private float yaw;
-    private float pitch;
-    private Vector3 currentRotation;
-
-    public Vector3 playerOffset;
-    public float distanceFromOffset;
-    public Transform rotator;
-    public Transform target;
-
-
-
-    public Vector2 pitchMinMax = new Vector2(-40, 85);
-    public float rotationSmoothTime = 8f;
-    void AimView()
+   
+    public void AimView()
     {
         //reticle or corshair or whatever control and appearance
         // aim and orientation animation when models ready 
@@ -240,7 +263,7 @@ public class NewPerspectiveSwitcher : MonoBehaviour
 
         target.eulerAngles = e;
     } 
-    void AimViewOn()
+    public void AimViewOn()
     {
         aimView = !aimView;
     }
