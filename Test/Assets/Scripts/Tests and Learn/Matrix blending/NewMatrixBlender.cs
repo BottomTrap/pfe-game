@@ -20,7 +20,7 @@ public class NewMatrixBlender : MonoBehaviour
 
     private IEnumerator LerpFromTo(Matrix4x4 src, Matrix4x4 dest, float duration, float ease, bool reverse)
     {
-        float startTime = Time.time;
+        var startTime = Time.time;
         while (Time.time - startTime < duration)
         {
             float step;

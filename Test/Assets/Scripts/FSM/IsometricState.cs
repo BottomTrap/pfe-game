@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-//This is called Level Manager but I guess this is one single state in the big FSM picture, so it will be called ActionMode transition or something along the lines
+
 
 public class IsometricState : StateMachineBehaviour
 {
