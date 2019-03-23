@@ -4,18 +4,9 @@ using UnityEngine;
 
 namespace RG
 {
-    public class StateManager : MonoBehaviour
+    public abstract class StateManager : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        private State currentState;
+        protected IDictionnary<string,State> allStatesDic = n
     }
 }
