@@ -57,18 +57,18 @@ public class NewPerspectiveSwitcher : MonoBehaviour
 
 
     //FiniteStateMachine
-    private IsometricState isometricManager;
-    private Animator animator;
+    //private IsometricState isometricManager;
+    //private Animator animator;
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>();
     }
 
     void Start()
     {
         //Delegate subscription 
-        ObjectClick.characterSelectDelegate += PlayerSleceted;
+        ObjectClick.characterSelectDelegate += CamTrans;
         PlayerMovement.viewChangeDelegate += AimViewOn;
         
         //Third Person Camera Stuff
@@ -77,8 +77,8 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         //offset = transform.position - player.transform.position;
 
         //FSM Stuff
-        isometricManager = animator.GetBehaviour<IsometricState>  ();
-        isometricManager.camBehaviour = this;
+        //isometricManager = animator.GetBehaviour<IsometricState>  ();
+        //isometricManager.camBehaviour = this;
         
         
         //Perspective switcher stuff
@@ -113,7 +113,7 @@ public class NewPerspectiveSwitcher : MonoBehaviour
         }
         if (orthoOn && !transitionning)
         {
-           // IsoMovement();
+            IsoMovement();
         }
         if(!orthoOn && !transitionning && aimView)
         {
@@ -131,15 +131,16 @@ public class NewPerspectiveSwitcher : MonoBehaviour
   //}
     public void PlayerSleceted()
     {
-        playerTransform = ObjectClick.objectPos;
+        
 
     }
     void CamTrans() //activated by delegate
     {
-        //transitionning = true;
-        //orthoOn = false;
-        //Debug.Log(orthoOn);
-        //Debug.Log(transitionning);
+        playerTransform = ObjectClick.objectPos;
+        transitionning = true;
+        orthoOn = false;
+        Debug.Log(orthoOn);
+        Debug.Log(transitionning);
         
 
 

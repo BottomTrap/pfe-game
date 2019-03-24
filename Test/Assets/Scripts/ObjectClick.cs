@@ -13,19 +13,19 @@ public class ObjectClick : MonoBehaviour
     private PlayerMovement playerMovement;
 
 
-    private Animator animator;
-    public IsometricState isometricState;
+    //private Animator animator;
+    //public IsometricState isometricState;
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>();
     }
 
     private void Start()
     {
         playerMovement = (PlayerMovement)GetComponent(typeof(PlayerMovement));
         //FSM Stuff
-        isometricState = animator.GetBehaviour<IsometricState>();
+        //isometricState = animator.GetBehaviour<IsometricState>();
         
     }
 
@@ -35,11 +35,11 @@ public class ObjectClick : MonoBehaviour
         objectClicked = true;
         objectPos = transform;
         
-        if (tag == "Player" && isometricState.commmandPoints>0)
+        if (tag == "Player" )
         {
             characterSelectDelegate();
             playerMovement.didHit = false;
-            animator.SetBool("orthoOn", false);
+            //animator.SetBool("orthoOn", false);
         }
         else if (tag == "Enemy")//do things if the clicked object is an enemy
         {
