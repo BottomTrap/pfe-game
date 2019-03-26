@@ -112,5 +112,15 @@ MonoBehaviour:
   near: 0.3
   far: 1000
   orthographicSize: 10
-  offset: {x: 0, y: 0, z: 0}
+  orthoOn: 1
+  transitionning: 0
+  aimView: 0
   rotateSpeed: 5
+  mouseSensitivity: 10
+  playerOffset: {x: 0, y: 0, z: 0}
+  distanceFromOffset: 0
+  rotator: {fileID: 0}
+  target: {fileID: 0}
+  pitchMinMax: {x: -40, y: 85}
+  rotationSmoothTime: 8
+  offset: {x: 0, y: 0, z: 0}
